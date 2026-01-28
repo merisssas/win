@@ -1,5 +1,6 @@
-# Base image terbaik untuk QEMU-KVM Docker
-FROM dockur/windows
+# --- PERBAIKAN UTAMA ---
+# Gunakan ghcr.io karena docker.io sudah tidak bisa diakses untuk image ini
+FROM ghcr.io/dockur/windows
 
 # Metadata
 LABEL maintainer="User Github"
@@ -7,47 +8,39 @@ LABEL description="Optimized Windows 11 ARM64 for Oracle Cloud (Ampere A1)"
 LABEL org.opencontainers.image.source="https://github.com/dockur/windows"
 
 # --- SYSTEM RESOURCES (Oracle Free Tier Optimization) ---
-# RAM: 18GB untuk Windows, sisa 6GB untuk Host OS (Safety buffer)
+# RAM: 18GB untuk Windows
 ENV RAM_SIZE="18G"
 
 # CPU: Gunakan semua 4 Core Ampere A1
 ENV CPU_CORES="4"
 
-# Disk: 64GB (Standar cukup untuk Windows 11 + Apps)
+# Disk: 64GB
 ENV DISK_SIZE="64G"
 
-# --- WINDOWS VERSION & OPTIMIZATION (The Secret Sauce) ---
-# Menggunakan "win11"
+# --- WINDOWS VERSION & OPTIMIZATION ---
 ENV VERSION="win11"
 
-# [PENTING] TINY Mode:
-# Nilai "win11" akan memicu script debloat otomatis (Tiny11).
-# Ini akan membuang Telemetry, Edge, Defender berlebih, dll.
-# Sangat direkomendasikan untuk CPU ARM agar tidak berat di idle.
+# TINY Mode: Wajib untuk ARM agar ringan
 ENV TINY="win11"
 
 # --- REGION & USER ---
 ENV REGION="en-US"
 ENV KEYBOARD="en-US"
-# Password default user (docker). Kosongkan jika ingin set manual nanti.
-# ENV PASSWORD="PasswordRahasia123"
 
 # --- DRIVER & PERFORMANCE ---
-# Menggunakan VirtIO untuk performa maksimal di KVM
 ENV DISK_DRIVER="virtio"
 ENV NET_DRIVER="virtio"
 ENV VIDEO_DRIVER="virtio"
 
-# Mencegah disconnect RDP saat idle lama
+# Mencegah disconnect
 ENV RDP_TIMEOUT="0"
 
-# Otomatis setuju EULA & Instalasi tanpa intervensi
+# Otomatis setuju EULA
 ENV ACCEPT_EULA="Y"
 ENV MANUAL="N"
 
 # --- QEMU ADVANCED FLAGS ---
-# Flags tambahan untuk stabilitas ARM64
-# -high-priority: Memberikan prioritas proses
+# Optimasi memori ballooning
 ENV ARGUMENTS="-device virtio-balloon-pci,deflate-on-oom=on"
 
 # Expose ports
