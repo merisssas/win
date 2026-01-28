@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.source="https://github.com/dockur/windows"
 
 # --- SYSTEM RESOURCES (Oracle Free Tier Optimization) ---
 # RAM: 18GB untuk Windows
-ENV RAM_SIZE="18G"
+ENV RAM_SIZE="13G"
 
 # CPU: Gunakan semua 4 Core Ampere A1
 ENV CPU_CORES="4"
